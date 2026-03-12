@@ -1,113 +1,44 @@
-# AI Rules for {{project-name}}
+# Rules for AI
 
-{{project-description}}
+This file provides guidance to AI Agent when working with code in this repository.
 
-## Tech Stack
+## Commands
 
-- Astro 5
-- TypeScript 5
-- React 19
-- Tailwind 4
-- Shadcn/ui
+- `npm run dev` — start dev server on port 3000
+- `npm run build` — production build (SSR via `@astrojs/node` standalone adapter)
+- `npm run preview` — preview production build
+- `npm run lint` — ESLint (flat config, eslint.config.js)
+- `npm run lint:fix` — auto-fix lint issues
+- `npm run format` — Prettier (includes prettier-plugin-astro)
 
-## Project Structure
+Pre-commit hooks: husky + lint-staged runs `eslint --fix` on `*.{ts,tsx,astro}` and `prettier --write` on `*.{json,css,md}`.
 
-When introducing changes to the project, always follow the directory structure below:
+## Architecture
 
-- `./src` - source code
-- `./src/layouts` - Astro layouts
-- `./src/pages` - Astro pages
-- `./src/pages/api` - API endpoints
-- `./src/middleware/index.ts` - Astro middleware
-- `./src/db` - Supabase clients and types
-- `./src/types.ts` - Shared types for backend and frontend (Entities, DTOs)
-- `./src/components` - Client-side components written in Astro (static) and React (dynamic)
-- `./src/components/ui` - Client-side components from Shadcn/ui
-- `./src/lib` - Services and helpers
-- `./src/assets` - static internal assets
-- `./public` - public assets
+**Astro 5 SSR app** with React 19 islands, Tailwind 4, Supabase auth, and shadcn/ui components.
 
-When modifying the directory structure, always update this section.
+### Rendering mode
+Full server-side rendering (`output: "server"` in astro.config.mjs). All pages are server-rendered by default. API routes must export `const prerender = false`.
 
-## Coding practices
+### Auth flow
+- `src/lib/supabase.ts` — creates a Supabase SSR client using `@supabase/ssr` with cookie-based sessions. Uses `astro:env/server` for `SUPABASE_URL` and `SUPABASE_KEY` (server-only secrets declared in astro.config.mjs `env.schema`).
+- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from routes listed in `PROTECTED_ROUTES`.
+- API endpoints: `src/pages/api/auth/{signin,signup,signout}.ts`
+- Auth pages: `src/pages/auth/{signin,signup,confirm-email}.astro`
+- Protected page example: `src/pages/dashboard.astro`
 
-### Guidelines for clean code
+### Key conventions
+- **Path alias**: `@/*` maps to `./src/*` (tsconfig paths).
+- **Astro components** for static content/layout; **React components** only when interactivity is needed.
+- **Tailwind class merging**: use the `cn()` helper from `@/lib/utils` (clsx + tailwind-merge) for conditional/merged class names. Do not concatenate class strings manually.
+- **shadcn/ui**: components live in `src/components/ui/`, "new-york" style variant. Install new ones with `npx shadcn@latest add [name]`.
+- **API routes**: use uppercase `GET`, `POST` exports; validate input with zod.
+- **Supabase migrations**: `supabase/migrations/` using naming format `YYYYMMDDHHmmss_short_description.sql`. Always enable RLS on new tables with granular per-operation, per-role policies.
+- **React**: no Next.js directives ("use client" etc.). Extract hooks to `src/components/hooks/`.
+- **Services/helpers** go in `src/lib/` (or `src/lib/services/` for extracted business logic).
+- **Shared types** (entities, DTOs) go in `src/types.ts`.
 
-- Use feedback from linters to improve the code when making changes.
-- Prioritize error handling and edge cases.
-- Handle errors and edge cases at the beginning of functions.
-- Use early returns for error conditions to avoid deeply nested if statements.
-- Place the happy path last in the function for improved readability.
-- Avoid unnecessary else statements; use if-return pattern instead.
-- Use guard clauses to handle preconditions and invalid states early.
-- Implement proper error logging and user-friendly error messages.
-- Consider using custom error types or error factories for consistent error handling.
-
-## Frontend
-
-### General Guidelines
-
-- Use Astro components (.astro) for static content and layout
-- Implement framework components in React only when interactivity is needed
-
-### Guidelines for Styling
-
-#### Tailwind
-
-- Use the @layer directive to organize styles into components, utilities, and base layers
-- Use arbitrary values with square brackets (e.g., w-[123px]) for precise one-off designs
-- Implement the Tailwind configuration file for customizing theme, plugins, and variants
-- Leverage the theme() function in CSS for accessing Tailwind theme values
-- Implement dark mode with the dark: variant
-- Use responsive variants (sm:, md:, lg:, etc.) for adaptive designs
-- Leverage state variants (hover:, focus-visible:, active:, etc.) for interactive elements
-
-### Guidelines for Accessibility
-
-#### ARIA Best Practices
-
-- Use ARIA landmarks to identify regions of the page (main, navigation, search, etc.)
-- Apply appropriate ARIA roles to custom interface elements that lack semantic HTML equivalents
-- Set aria-expanded and aria-controls for expandable content like accordions and dropdowns
-- Use aria-live regions with appropriate politeness settings for dynamic content updates
-- Implement aria-hidden to hide decorative or duplicative content from screen readers
-- Apply aria-label or aria-labelledby for elements without visible text labels
-- Use aria-describedby to associate descriptive text with form inputs or complex elements
-- Implement aria-current for indicating the current item in a set, navigation, or process
-- Avoid redundant ARIA that duplicates the semantics of native HTML elements
-
-### Guidelines for Astro
-
-- Leverage View Transitions API for smooth page transitions (use ClientRouter)
-- Use content collections with type safety for blog posts, documentation, etc.
-- Leverage Server Endpoints for API routes
-- Use POST, GET  - uppercase format for endpoint handlers
-- Use `export const prerender = false` for API routes
-- Use zod for input validation in API routes
-- Extract logic into services in `src/lib/services`
-- Implement middleware for request/response modification
-- Use image optimization with the Astro Image integration
-- Implement hybrid rendering with server-side rendering where needed
-- Use Astro.cookies for server-side cookie management
-- Leverage import.meta.env for environment variables
-
-### Guidelines for React
-
-- Use functional components with hooks instead of class components
-- Never use "use client" and other Next.js directives as we use React with Astro
-- Extract logic into custom hooks in `src/components/hooks`
-- Implement React.memo() for expensive components that render often with the same props
-- Utilize React.lazy() and Suspense for code-splitting and performance optimization
-- Use the useCallback hook for event handlers passed to child components to prevent unnecessary re-renders
-- Prefer useMemo for expensive calculations to avoid recomputation on every render
-- Implement useId() for generating unique IDs for accessibility attributes
-- Consider using the new useOptimistic hook for optimistic UI updates in forms
-- Use useTransition for non-urgent state updates to keep the UI responsive
-
-### Backend and Database
-
-- Use Supabase for backend services, including authentication and database interactions.
-- Follow Supabase guidelines for security and performance.
-- Use Zod schemas to validate data exchanged with the backend.
-- Use supabase from context.locals in Astro routes instead of importing supabaseClient directly
-- Use SupabaseClient type from `src/db/supabase.client.ts`, not from `@supabase/supabase-js`
+### Environment
+- Node.js v22.14.0 (see `.nvmrc`)
+- Env vars: `SUPABASE_URL`, `SUPABASE_KEY` (copy `.env.example` to `.env`)
+- Local Supabase: `npx supabase start` (requires Docker)

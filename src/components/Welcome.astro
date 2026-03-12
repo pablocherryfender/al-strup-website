@@ -1,21 +1,23 @@
 ---
-import { readFileSync } from "node:fs";
 import LibBadge from "@/components/ui/LibBadge.astro";
+import Topbar from "@/components/Topbar.astro";
+import pkg from "../../package.json";
+import prettierPkg from "prettier/package.json";
 
-const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
 const ver = (v: string) => v.replace(/[\^~]/, "");
 const astroVersion = ver(pkg.dependencies.astro);
 const reactVersion = ver(pkg.dependencies.react);
 const tailwindVersion = ver(pkg.dependencies.tailwindcss);
 const typescriptVersion = ver(pkg.devDependencies.typescript);
 const eslintVersion = ver(pkg.devDependencies.eslint);
-const prettierPkg = JSON.parse(readFileSync("node_modules/prettier/package.json", "utf-8"));
 const prettierVersion = prettierPkg.version;
+const supabaseVersion = ver(pkg.dependencies["@supabase/supabase-js"]);
 ---
 
 <div
   class="relative w-full mx-auto min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-4 sm:p-8"
 >
+  <Topbar />
   <div
     class="relative max-w-4xl mx-auto backdrop-blur-xl bg-gradient-to-b from-white/10 to-white/5 rounded-2xl shadow-2xl p-8 text-white border border-white/10"
   >
@@ -50,6 +52,10 @@ const prettierVersion = prettierPkg.version;
             <li class="flex items-center space-x-3">
               <LibBadge name="TypeScript" version={typescriptVersion} />
               <span class="text-blue-100/90">- Typowanie statyczne</span>
+            </li>
+            <li class="flex items-center space-x-3">
+              <LibBadge name="Supabase" version={supabaseVersion} />
+              <span class="text-blue-100/90">- Autentykacja i przechowywanie danych</span>
             </li>
           </ul>
         </div>
