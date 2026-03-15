@@ -11,7 +11,6 @@ const tailwindVersion = ver(pkg.dependencies.tailwindcss);
 const typescriptVersion = ver(pkg.devDependencies.typescript);
 const eslintVersion = ver(pkg.devDependencies.eslint);
 const prettierVersion = prettierPkg.version;
-const supabaseVersion = ver(pkg.dependencies["@supabase/supabase-js"]);
 ---
 
 <div
@@ -52,10 +51,6 @@ const supabaseVersion = ver(pkg.dependencies["@supabase/supabase-js"]);
             <li class="flex items-center space-x-3">
               <LibBadge name="TypeScript" version={typescriptVersion} />
               <span class="text-blue-100/90">- Typowanie statyczne</span>
-            </li>
-            <li class="flex items-center space-x-3">
-              <LibBadge name="Supabase" version={supabaseVersion} />
-              <span class="text-blue-100/90">- Autentykacja i przechowywanie danych</span>
             </li>
           </ul>
         </div>
