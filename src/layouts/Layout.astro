@@ -6,11 +6,13 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title?: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title = "Allross — Instalacje i Serwis Trójmiasto",
   description = "Montaż pomp ciepła, klimatyzacji, ogrzewania podłogowego i systemów sanitarnych. Obsługujemy Gdańsk, Gdynię i Sopot.",
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://allross.pl");
@@ -26,17 +28,28 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://allross.
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Allross" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
   </head>
   <body>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-brand-primary focus:text-white focus:px-4 focus:py-2 focus:rounded"
+    >
+      Przejdź do treści
+    </a>
     <Navbar />
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <Footer />
