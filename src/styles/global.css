@@ -110,11 +110,26 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --color-brand-primary: #1D4ED8;
+  --color-brand-primary-dark: #1E3A8A;
+  --color-brand-surface: #F8FAFC;
+  --color-brand-text: #0F172A;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+    background-color: #F8FAFC;
+    color: #0F172A;
+  }
+  section {
+    scroll-margin-top: 80px;
   }
 }

@@ -1,24 +1,45 @@
 ---
 import "../styles/global.css";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
 
 interface Props {
   title?: string;
+  description?: string;
 }
 
-const { title = "10x Astro Starter" } = Astro.props;
+const {
+  title = "Allross — Instalacje i Serwis Trójmiasto",
+  description = "Montaż pomp ciepła, klimatyzacji, ogrzewania podłogowego i systemów sanitarnych. Obsługujemy Gdańsk, Gdynię i Sopot.",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://allross.pl");
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
   </head>
   <body>
-    <slot />
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>
 
@@ -27,6 +48,5 @@ const { title = "10x Astro Starter" } = Astro.props;
   body {
     margin: 0;
     width: 100%;
-    height: 100%;
   }
 </style>

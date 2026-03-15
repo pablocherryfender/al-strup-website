@@ -1,0 +1,34 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-brand-text text-white mt-16">
+  <div class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Brand -->
+    <div>
+      <p class="text-xl font-bold tracking-wide mb-2">Allross</p>
+      <p class="text-white/60 text-sm">Instalacje i serwis — Trójmiasto</p>
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <p class="text-sm font-semibold text-white/80 mb-2 uppercase tracking-wider">Kontakt</p>
+      <ul class="space-y-1 text-sm text-white/60">
+        <li>Tel: <span class="text-white/80">TBD</span></li>
+        <li>Email: <span class="text-white/80">TBD</span></li>
+        <li>NIP: <span class="text-white/80">TBD</span></li>
+      </ul>
+    </div>
+
+    <!-- Area -->
+    <div>
+      <p class="text-sm font-semibold text-white/80 mb-2 uppercase tracking-wider">Obszar działania</p>
+      <p class="text-sm text-white/60">Gdańsk · Gdynia · Sopot<br />i okolice Trójmiasta</p>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10 py-4 text-center text-xs text-white/40">
+    © {year} Allross · Wszelkie prawa zastrzeżone ·
+    <a href="/polityka-prywatnosci" class="hover:text-white/70 transition-colors underline">Polityka prywatności</a>
+  </div>
+</footer>
